@@ -1,0 +1,25 @@
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = LocOptions.Value.SupportedUICultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.NativeName })
+        .ToList();
+}
+
+
+@*<label asp-for="@requestCulture.RequestCulture.UICulture.Name">@Localizer["Language:"]</label>*@
+<select class="styled-select" name="culture" onchange="DoSubmit(this);" asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
+<script language="javascript" type="text/javascript">
+    function DoSubmit(sel) {
+        window.location.href = "/Home/SetCulture?culture=" + sel.value;
+    }
+</script>
+
